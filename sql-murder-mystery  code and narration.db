@@ -1,0 +1,67 @@
+/* Name: Ifeoluwa Kehinde
+
+QUestion: A crime has taken place and the detective needs your help. The detective gave you the crime scene report, but you somehow lost it.
+You vaguely remember that the crime was a murder that occurred sometime on Jan.15, 2018 and that it took place in SQL City
+Start by retrieving the corresponding crime scene report from the police department’s database.*/
+
+SELECT *
+FROM crime_scene_report
+WHERE date = 20180115 AND city = 'SQL City' and type = 'murder';
+
+/*first witness lives at the last house on "Northwestern Dr"
+Second witness named Annabel, lives somewhere on "Franklin Ave"*/
+
+SELECT *
+FROM person
+WHERE address_street_name = "Northwestern Dr"
+ORDER BY address_number DESC
+LIMIT 1
+
+SELECT *
+FROM person
+WHERE name LIKE "%Annabel%" AND address_street_name LIKE "%Franklin Ave%"
+
+/*first witness is named Morty Schapiro with ID = 14887
+second witness is named Annabek Miller with ID = 16371
+I used the schema to figure that id is the primary key on person table and can be linked to the person id on the interview table.*/
+
+SELECT *
+FROM interview
+WHERE person_id = 14887 OR person_id = 16371
+
+/* first witness = Saw a gold member with a get fit now bag with membership number that starts with "48Z", got into a car with a plate that included "H42W"
+second witness = recognized the killer from the gym while working out last week on January the 9th.
+Next is to track who the murderer was using the witnesses resultset*/
+
+SELECT *
+FROM get_fit_now_check_in
+WHERE check_in_date = 20180109 AND membership_id LIKE "48Z%"
+
+/* The suspected murderers membership ids are 48Z7A and 48Z55 and next is to get their names*/ 
+
+SELECT * FROM get_fit_now_member
+WHERE id = "48Z7A" or id = "48Z55"
+
+/* Jeremy bowers and Joe Germuska were retuned. next is to use the find whoose plate number include "H42W"*/
+
+SELECT * from drivers_license
+WHERE plate_number LIKE "%H42W%"
+
+/* The resultset returns 3 people with thier IDs, 2 male and 1 female. The female would be dropped cos report says murderer is a male
+male id 1 = 423327
+male id 2 = 664760
+Ids would now be joined on the person table to return their names and more details*/
+
+SELECT * FROM person
+JOIN drivers_license
+ON person.license_id=drivers_license.id
+WHERE person.license_id = "423327" or person.license_id = "664760"
+
+/* I see Jeremy Bowers again with id 67318 and Tushar Chandra with id 51739 but I have to check if Tushar Chandra is a member of the get fit now*/
+
+SELECT *
+from get_fit_now_member
+WHERE person_id = "51739"
+
+/*Appears that Tushar Chandra is not a mumber of the get fit now gym, leaving the suspect as Jeremy Bowers and the actual murderer.
+*/
